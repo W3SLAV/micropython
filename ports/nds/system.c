@@ -70,8 +70,9 @@ static void nds_init(void) {
 
     // Initialize the hardware and other peripherals.
     powerOn(POWER_ALL);
-    irqInit();
-    irqEnable(IRQ_VBLANK);
+    //irqInit();
+    //irqEnable(IRQ_VBLANK);
+
 }
 
 // Write a character out to the console.

@@ -12,11 +12,25 @@ MICROPY_ROM_TEXT_COMPRESSION ?= 0
 DFU ?= $(TOP)/tools/dfu.py
 PYDFU ?= $(TOP)/tools/pydfu.py
 
+
+#naming :D
+
+GAME_TITLE := MicroPython
+GAME_SUBTITLE1 := W3SLAV
+#GAME_SUBTITLE2 := blank
+_ARM7_ELF	:=	-7 $(DEVKITPRO)/calico/bin/ds7_maine.elf
+GAME_ICON	:=	../../logo/logo.bmp
+
+
+
+
+
+
 # Set CFLAGS.
 ARCH	+=	#-mthumb -mthumb-interwork
 
-LIBS	+= -lnds9
-LIBDIRS	+= $(LIBNDS)
+LIBS	+= -lnds9 -lcalico_ds9
+LIBDIRS	+= $(LIBNDS) $(CALICO)
 
 
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
@@ -24,7 +38,9 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 					-I$(CURDIR)/$(BUILD)
 
+
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
 
 
 
@@ -32,7 +48,7 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 CFLAGS += -I. -I$(TOP) $(INCLUDE) -I$(BUILD)
 
-CFLAGS += -Werror -nostdlib
+CFLAGS += -D__NDS__ -Werror -nostdlib
 CFLAGS	+=	-g -Wall -O2\
  		-march=armv5te -mtune=arm946e-s -fomit-frame-pointer\
 		-ffast-math \
@@ -42,7 +58,7 @@ CFLAGS	+=	$(INCLUDE) -DARM9
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 
 ASFLAGS	+=	-g $(ARCH)
-LDFLAGS	=	-T heap.ld -specs=ds_arm9.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
+LDFLAGS	=	-specs=nds.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -L$(DEVKITPRO)/libnds/lib
 CSUPEROPT = -Os # save some code space for performance-critical code
 
 
@@ -75,13 +91,13 @@ all: $(BUILD)/firmware.nds
 # Define how to build the firmware.
 $(BUILD)/firmware.elf: $(OBJ)
 	$(ECHO) "LINK $@"
-	$(Q)$(CC) $(LDFLAGS) -o $@ $^ $(LIBPATHS) $(LIBS) #-lnds9 #$(LIBS)
+	$(Q)$(CC) $(LDFLAGS) -o $@ $^ $(LIBPATHS) $(LIBS)
 	$(Q)$(SIZE) $@
 
 # Add a rule to convert the ELF file to an NDS file.
 $(BUILD)/firmware.nds: $(BUILD)/firmware.elf
 	$(ECHO) "CONVERT $@"
-	$(Q)ndstool -c $@ -9 $<
+	$(Q)ndstool -c $@ -9 $< $(_ARM7_ELF) -b $(GAME_ICON) "$(GAME_TITLE);$(GAME_SUBTITLE1);$(GAME_SUBTITLE2)" $(_ADDFILES)
 
 #deploy: $(BUILD)/firmware.dfu
 #	$(Q)$(PYTHON) $(PYDFU) -u $^

@@ -52,7 +52,7 @@ static void do_str(const char *src, mp_parse_input_kind_t input_kind) {
 
 // Main entry point: initialise the runtime and execute demo strings.
 int main(void) {
-    //consoleDemoInit();
+    consoleDemoInit();
     // Initialize the console for printing to the screen.
     
     PrintConsole topScreen;
@@ -74,7 +74,7 @@ int main(void) {
     mp_deinit();
 
     while(1) {
-        swiWaitForVBlank();
+        //swiWaitForVBlank();
 	}
 
 	return 0;
