@@ -48,7 +48,7 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------*/
 
-// File last updated 5/22/25
+/* File last updated 5/22/25 */
 
 /*--------------------------------------------------------------------------------
 	** Linker script for DS/DSi homebrew, ARM9 side **
